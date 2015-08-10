@@ -1,0 +1,88 @@
+
+import ConfigParser
+import logging
+import re
+from Site import Site
+
+from campus_factory.util.StreamToLogger import StreamToLogger
+
+
+class StashCacheTester(object):
+    """Main class for the stash cache tester"""
+    def __init__(self, configFiles):
+        
+        # First, read in the configuration
+        self.config = ConfigParser.SafeConfigParser()
+        self.config.read(configFile)
+        
+        if config.has_section("logging"):
+            loglevel = config.get("logging", "loglevel")
+            logdirectory = config.get("logging", "logdirectory")
+            self._setLogging(loglevel, logdirectory)
+            
+
+        
+    def _setLogging(self, loglevel, logdirectory):
+        logging_levels = {'debug': logging.DEBUG,
+                          'info': logging.INFO,
+                          'warning': logging.WARNING,
+                          'error': logging.ERROR,
+                          'critical': logging.CRITICAL}
+
+        level = logging_levels.get(loglevel)
+        handler = logging.handlers.RotatingFileHandler(os.path.join(logdirectory, logdirectory),
+                        maxBytes=10000000, backupCount=5)
+        root_logger = logging.getLogger()
+        # Clear out the logger
+        root_logger.handlers = []
+        
+        root_logger.setLevel(level)
+        formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+        handler.setFormatter(formatter)
+        root_logger.addHandler(handler)
+        
+        # Send stdout to the log
+        stdout_logger = logging.getLogger()
+        sl = StreamToLogger(stdout_logger, logging.INFO)
+        sys.stdout = sl
+ 
+        stderr_logger = logging.getLogger()
+        sl = StreamToLogger(stderr_logger, logging.ERROR)
+        sys.stderr = sl
+        
+        
+    
+    def runTests(self):
+        """
+        Run the tests prescribed in the configuration
+        """
+        # First, get the sites from the configuration
+        sites = self.config.get("general", "sites")
+        logging.debug("Got sites:\"%s\" from config file" % sites)
+        if sites is None or sites is "":
+            logging.error("No sites defined, therefore no tests created.")
+            return
+        
+        split_sites = re.split("[,\s]+")
+        
+        # Create the site specific tests
+        test_dirs = []
+        for site in split_sites:
+            tmp_site = Site(site)
+            test_dir = tmp_site.createTest()
+            test_dirs.append(test_dir)
+        
+        
+        # Create the DAG from the template
+        
+        
+        # Start the DAG
+        
+        
+    def reduceResults(self):
+        """
+        Reduce the results from the DAG to something useful
+        """
+        
+        
+        
