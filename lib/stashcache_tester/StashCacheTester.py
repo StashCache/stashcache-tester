@@ -2,9 +2,10 @@
 import ConfigParser
 import logging
 import re
-from Site import Site
+# TODO: possibly use PackageLoader
+from jinja2 import Environment, FileSystemLoader
 
-from campus_factory.util.StreamToLogger import StreamToLogger
+from stashcache_tester.util.StreamToLogger import StreamToLogger
 
 
 class StashCacheTester(object):
@@ -13,11 +14,11 @@ class StashCacheTester(object):
         
         # First, read in the configuration
         self.config = ConfigParser.SafeConfigParser()
-        self.config.read(configFile)
+        self.config.read(configFiles)
         
-        if config.has_section("logging"):
-            loglevel = config.get("logging", "loglevel")
-            logdirectory = config.get("logging", "logdirectory")
+        if self.config.has_section("logging"):
+            loglevel = self.config.get("logging", "loglevel")
+            logdirectory = self.config.get("logging", "logdirectory")
             self._setLogging(loglevel, logdirectory)
             
 
@@ -74,6 +75,9 @@ class StashCacheTester(object):
         
         
         # Create the DAG from the template
+        env = Environment(loader=FileSystemLoader('templates'))
+        dag_template = env.get_template("dag.tmpl")
+        print template.render(split_sites)
         
         
         # Start the DAG
@@ -83,6 +87,6 @@ class StashCacheTester(object):
         """
         Reduce the results from the DAG to something useful
         """
-        
+        pass
         
         

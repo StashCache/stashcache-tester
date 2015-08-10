@@ -1,0 +1,14 @@
+# Template for submission to a single site
+# Variables that should be set in the DAG:
+# - SITE: Site name to be used in the requirements
+
+
+universe = vanilla
+output = output.$(SITE).$(PROCESS)
+error = error.$(SITE).$(PROCESS)
+log = $(SITE).log
+
+requirements = GLIDEIN_ResourceName =?= "$(SITE)"
+
+
+queue
