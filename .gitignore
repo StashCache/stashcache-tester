@@ -1,2 +1,4 @@
 
 tester/*
+*.pyc
+log/*

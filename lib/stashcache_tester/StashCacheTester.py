@@ -1,9 +1,13 @@
 
 import ConfigParser
 import logging
+import logging.handlers
+import os, sys
 import re
 # TODO: possibly use PackageLoader
 from jinja2 import Environment, FileSystemLoader
+
+from stashcache_tester.Site import Site
 
 from stashcache_tester.util.StreamToLogger import StreamToLogger
 
@@ -31,7 +35,7 @@ class StashCacheTester(object):
                           'critical': logging.CRITICAL}
 
         level = logging_levels.get(loglevel)
-        handler = logging.handlers.RotatingFileHandler(os.path.join(logdirectory, logdirectory),
+        handler = logging.handlers.RotatingFileHandler(os.path.join(logdirectory, "stashcachetester.log"),
                         maxBytes=10000000, backupCount=5)
         root_logger = logging.getLogger()
         # Clear out the logger
@@ -64,7 +68,7 @@ class StashCacheTester(object):
             logging.error("No sites defined, therefore no tests created.")
             return
         
-        split_sites = re.split("[,\s]+")
+        split_sites = re.split("[,\s]+", sites)
         
         # Create the site specific tests
         test_dirs = []
@@ -77,7 +81,7 @@ class StashCacheTester(object):
         # Create the DAG from the template
         env = Environment(loader=FileSystemLoader('templates'))
         dag_template = env.get_template("dag.tmpl")
-        print template.render(split_sites)
+        print dag_template.render(sites=split_sites)
         
         
         # Start the DAG
