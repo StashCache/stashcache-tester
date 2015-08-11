@@ -31,7 +31,7 @@ class Site:
         
         # Create the site specific directory
         try:
-            os.mkdir(site_testDir)
+            os.makedirs(site_testDir)
         except IOError as e:
             logging.error("I/O error({0}): {1}".format(e.errno, e.strerror))
         

@@ -9,6 +9,7 @@ import subprocess
 from jinja2 import Environment, FileSystemLoader
 
 from stashcache_tester.Site import Site
+from stashcache_tester.util.ExternalCommands import RunExternal
 
 from stashcache_tester.util.StreamToLogger import StreamToLogger
 
@@ -96,8 +97,7 @@ class StashCacheTester(object):
             f.write(reduce_template.render(sites=split_sites))
         
         # Start the DAG
-        p = subprocess.Popen(['condor_submit_dag', test_dag], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        (stdout, stderr) = p.communicate()
+        (stdout, stderr) = RunExternal("cd %s; condor_submit_dag submit.dag" % testingdir)
         logging.debug("output from condor_submit_dag: %s" % stdout)
         if stderr is not None or stderr is not "":
             logging.error("Error from condor_submit_dag: %s" % stderr)

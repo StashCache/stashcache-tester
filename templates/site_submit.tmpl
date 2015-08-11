@@ -3,12 +3,13 @@
 # - SITE: Site name to be used in the requirements
 
 
+initialdir = $(SITE)
 universe = vanilla
 output = output.$(SITE).$(PROCESS)
 error = error.$(SITE).$(PROCESS)
 log = $(SITE).log
 
-executable = site_test.sh
+executable = $(SITE)/site_test.sh
 arguments = $(SITE)
 
 requirements = GLIDEIN_ResourceName =?= "$(SITE)"
