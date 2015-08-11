@@ -1,8 +1,12 @@
-
-
+# Template for the testing dag
 
 
 {% for site in sites: %}
-   JOB {{ site }} site_submit.tmpl
-   VARS {{ site }} SITE="{{ site }}"
+# Jobs for site {{ site }}
+JOB {{ site }} {{ site }}/submit.condor
+VARS {{ site }} SITE="{{ site }}"
 {% endfor %}
+
+JOB test_reduce test_reduce.submit
+PARENT {% for site in sites: %}{{ site }} {% endfor %} CHILD test_reduce
+

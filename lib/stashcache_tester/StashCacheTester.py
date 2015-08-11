@@ -4,6 +4,7 @@ import logging
 import logging.handlers
 import os, sys
 import re
+import subprocess
 # TODO: possibly use PackageLoader
 from jinja2 import Environment, FileSystemLoader
 
@@ -71,20 +72,36 @@ class StashCacheTester(object):
         split_sites = re.split("[,\s]+", sites)
         
         # Create the site specific tests
+        env = Environment(loader=FileSystemLoader('templates'))
+        
         test_dirs = []
+        testingdir = self.config.get("general", "testingdir")
         for site in split_sites:
             tmp_site = Site(site)
-            test_dir = tmp_site.createTest()
+            test_dir = tmp_site.createTest(testingdir, env)
             test_dirs.append(test_dir)
         
         
         # Create the DAG from the template
-        env = Environment(loader=FileSystemLoader('templates'))
-        dag_template = env.get_template("dag.tmpl")
-        print dag_template.render(sites=split_sites)
         
+        dag_template = env.get_template("dag.tmpl")
+        test_dag = os.path.join(testingdir, "submit.dag")
+        with open(test_dag, 'w') as f:
+            f.write(dag_template.render(sites=split_sites))
+            
+            
+        reduce_template = env.get_template("test_reduce.tmpl")
+        reduce_submit = os.path.join(testingdir, "reduce.submit")
+        with open(reduce_submit, 'w') as f:
+            f.write(reduce_template.render(sites=split_sites))
         
         # Start the DAG
+        p = subprocess.Popen(['condor_submit_dag', test_dag], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        (stdout, stderr) = p.communicate()
+        logging.debug("output from condor_submit_dag: %s" % stdout)
+        if stderr is not None or stderr is not "":
+            logging.error("Error from condor_submit_dag: %s" % stderr)
+        
         
         
     def reduceResults(self):

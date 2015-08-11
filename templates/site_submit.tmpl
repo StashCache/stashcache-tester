@@ -8,7 +8,13 @@ output = output.$(SITE).$(PROCESS)
 error = error.$(SITE).$(PROCESS)
 log = $(SITE).log
 
+executable = site_test.sh
+arguments = $(SITE)
+
 requirements = GLIDEIN_ResourceName =?= "$(SITE)"
 
++WantsStashCache = true
+should_transfer_files = IF_NEEDED
+when_to_transfer_output = ON_EXIT
 
 queue
