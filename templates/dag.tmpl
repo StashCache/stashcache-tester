@@ -5,8 +5,8 @@
 # Jobs for site {{ site }}
 JOB {{ site }} {{ site }}/submit.condor
 VARS {{ site }} SITE="{{ site }}"
+SCRIPT POST {{ site }} site_post.py {{ site }}
 {% endfor %}
 
-JOB test_reduce test_reduce.submit
+JOB test_reduce reduce.submit
 PARENT {% for site in sites: %}{{ site }} {% endfor %} CHILD test_reduce
-

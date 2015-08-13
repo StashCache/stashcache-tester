@@ -38,7 +38,7 @@ class Site:
         # First, read in the submit template
         submit_template = jinjaEnvironment.get_template("site_submit.tmpl")
         with open(os.path.join(site_testDir, "submit.condor"), 'w') as f:
-            f.write(submit_template.render())
+            f.write(submit_template.render({"numsubmit": 200}))
         
         test_template = jinjaEnvironment.get_template("site_test.tmpl")
         with open(os.path.join(site_testDir, "site_test.sh"), 'w') as f:
