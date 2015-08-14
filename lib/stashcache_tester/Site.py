@@ -2,6 +2,7 @@ from jinja2 import Environment, FileSystemLoader
 
 import logging
 import os
+from stashcache_tester.util import Configuration
 
 
 class Site:
@@ -38,7 +39,7 @@ class Site:
         # First, read in the submit template
         submit_template = jinjaEnvironment.get_template("site_submit.tmpl")
         with open(os.path.join(site_testDir, "submit.condor"), 'w') as f:
-            f.write(submit_template.render({"numsubmit": 200}))
+            f.write(submit_template.render({"numsubmit": int(self.get_option(numtests))}))
         
         test_template = jinjaEnvironment.get_template("site_test.tmpl")
         with open(os.path.join(site_testDir, "site_test.sh"), 'w') as f:
@@ -46,4 +47,9 @@ class Site:
         
             
         return os.path.join(site_testDir, "submit.condor")
+        
+        
+     def get_option(self, option, default=None):
+        
+        return campus_factory.util.CampusConfig.get_option(option, default, self.siteName)
         

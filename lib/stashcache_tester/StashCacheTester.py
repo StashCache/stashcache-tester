@@ -1,5 +1,4 @@
 
-import ConfigParser
 import logging
 import logging.handlers
 import os, sys
@@ -12,6 +11,7 @@ import shutil
 import humanfriendly
 from stashcache_tester.Site import Site
 from stashcache_tester.util.ExternalCommands import RunExternal
+from stashcache_tester.util.Configuration import get_option, set_config_file
 
 from stashcache_tester.util.StreamToLogger import StreamToLogger
 
@@ -21,14 +21,12 @@ class StashCacheTester(object):
     def __init__(self, configFiles):
         
         # First, read in the configuration
-        self.config = ConfigParser.SafeConfigParser()
-        self.config.read(configFiles)
+        set_config_file(configFiles)
         self.config_location = os.path.abspath(configFiles)
         
-        if self.config.has_section("logging"):
-            loglevel = self.config.get("logging", "loglevel")
-            logdirectory = self.config.get("logging", "logdirectory")
-            self._setLogging(loglevel, logdirectory)
+        loglevel = get_option("loglevel", default="warning", section="logging")
+        logdirectory = get_option("logdirectory", default="log", section="logging")
+        self._setLogging(loglevel, logdirectory)
             
 
         
@@ -40,6 +38,11 @@ class StashCacheTester(object):
                           'critical': logging.CRITICAL}
 
         level = logging_levels.get(loglevel)
+        
+        # Create the log directory, if it doesn't already exist
+        if not os.path.isdir(logdirectory):
+            os.makedirs(logdirectory)
+        
         handler = logging.handlers.RotatingFileHandler(os.path.join(logdirectory, "stashcachetester.log"),
                         maxBytes=10000000, backupCount=5)
         root_logger = logging.getLogger()
@@ -67,7 +70,7 @@ class StashCacheTester(object):
         Run the tests prescribed in the configuration
         """
         # First, get the sites from the configuration
-        sites = self.config.get("general", "sites")
+        sites = get_option("sites")
         logging.debug("Got sites:\"%s\" from config file" % sites)
         if sites is None or sites is "":
             logging.error("No sites defined, therefore no tests created.")
@@ -76,9 +79,9 @@ class StashCacheTester(object):
         split_sites = re.split("[,\s]+", sites)
         
         # Parse the size of the test in bytes
-        raw_testsize = humanfriendly.parse_size(self.config.get("general", "testsize"))
+        raw_testsize = humanfriendly.parse_size(get_option("testsize"))
         
-        self.createTestFile(raw_testsize, self.config.get("general", "stashdir"))
+        self.createTestFile(raw_testsize, get_option("stashdir"))
         
         
         # Create the site specific tests
@@ -87,14 +90,14 @@ class StashCacheTester(object):
             "config_location": self.config_location,
             "stash_test_location": os.path.abspath(sys.argv[0]),
             "pythonpath": ":".join(sys.path),
-            "testurl": self.config.get("general", "testurl"),
-            "localpath": self.config.get("general", "stashdir"),
+            "testurl": get_option("testurl"),
+            "localpath": get_option("stashdir"),
             "testsize": raw_testsize,
             "humantestsize": humanfriendly.format_size(raw_testsize)
         }
         
         test_dirs = []
-        testingdir = self.config.get("general", "testingdir")
+        testingdir = get_option("testingdir")
         for site in split_sites:
             tmp_site = Site(site)
             test_dir = tmp_site.createTest(testingdir, env)
@@ -114,8 +117,8 @@ class StashCacheTester(object):
         with open(reduce_submit, 'w') as f:
             f.write(reduce_template.render())
             
-        shutil.copyfile("templates/site_post.py", os.path.join(self.config.get("general", "testingdir"), "site_post.py"))
-        os.chmod(os.path.join(self.config.get("general", "testingdir"), "site_post.py"), 0755)
+        shutil.copyfile("templates/site_post.py", os.path.join(get_option("testingdir"), "site_post.py"))
+        os.chmod(os.path.join(get_option("testingdir"), "site_post.py"), 0755)
         
         # Start the DAG
         (stdout, stderr) = RunExternal("cd %s; condor_submit_dag submit.dag" % testingdir)
