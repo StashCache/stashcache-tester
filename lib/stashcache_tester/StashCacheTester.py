@@ -5,16 +5,18 @@ import os, sys
 import re
 import subprocess
 # TODO: possibly use PackageLoader
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, PackageLoader
 import shutil
+import glob
+import json
 
 import humanfriendly
 from stashcache_tester.Site import Site
 from stashcache_tester.util.ExternalCommands import RunExternal
-from stashcache_tester.util.Configuration import get_option, set_config_file
+from stashcache_tester.util.Configuration import get_option, set_config_file, set_option
 
 from stashcache_tester.util.StreamToLogger import StreamToLogger
-
+from stashcache_tester.output.matplotlibOutput import MatplotlibOutput
 
 class StashCacheTester(object):
     """Main class for the stash cache tester"""
@@ -27,6 +29,9 @@ class StashCacheTester(object):
         loglevel = get_option("loglevel", default="warning", section="logging")
         logdirectory = get_option("logdirectory", default="log", section="logging")
         self._setLogging(loglevel, logdirectory)
+        
+        raw_testsize = humanfriendly.parse_size(get_option("testsize"))
+        set_option("raw_testsize", raw_testsize)
             
 
         
@@ -63,20 +68,23 @@ class StashCacheTester(object):
         sl = StreamToLogger(stderr_logger, logging.ERROR)
         sys.stderr = sl
         
-        
     
-    def runTests(self):
-        """
-        Run the tests prescribed in the configuration
-        """
+    def get_sites(self):
         # First, get the sites from the configuration
         sites = get_option("sites")
         logging.debug("Got sites:\"%s\" from config file" % sites)
         if sites is None or sites is "":
             logging.error("No sites defined, therefore no tests created.")
-            return
+            return None
         
         split_sites = re.split("[,\s]+", sites)
+        return split_sites
+    
+    def runTests(self):
+        """
+        Run the tests prescribed in the configuration
+        """
+        sites = self.get_sites()
         
         # Parse the size of the test in bytes
         raw_testsize = humanfriendly.parse_size(get_option("testsize"))
@@ -85,7 +93,10 @@ class StashCacheTester(object):
         
         
         # Create the site specific tests
-        env = Environment(loader=FileSystemLoader('templates'))
+        env = Environment(loader=PackageLoader('stashcache_tester', 'templates'))
+        
+        
+        
         env.globals = {
             "config_location": self.config_location,
             "stash_test_location": os.path.abspath(sys.argv[0]),
@@ -98,7 +109,7 @@ class StashCacheTester(object):
         
         test_dirs = []
         testingdir = get_option("testingdir")
-        for site in split_sites:
+        for site in sites:
             tmp_site = Site(site)
             test_dir = tmp_site.createTest(testingdir, env)
             test_dirs.append(test_dir)
@@ -109,7 +120,7 @@ class StashCacheTester(object):
         dag_template = env.get_template("dag.tmpl")
         test_dag = os.path.join(testingdir, "submit.dag")
         with open(test_dag, 'w') as f:
-            f.write(dag_template.render(sites=split_sites))
+            f.write(dag_template.render(sites=sites))
             
         
         reduce_template = env.get_template("test_reduce.tmpl")
@@ -160,6 +171,24 @@ class StashCacheTester(object):
         """
         Reduce the results from the DAG to something useful
         """
-        pass
         
+        siteData = {}
+        
+        # Read in the results
+        for site in self.get_sites():
+            logging.info("Processing site %s" % site)
+            inputdata = {}
+            with open("postprocess.%s.json" % site) as f:
+                inputdata = json.load(f)
+            
+            siteData[site] = inputdata
+        outputtype = get_option("outputtype")
+        if outputtype == "matplotlib":
+            outputProcessor = MatplotlibOutput(siteData)
+        else:
+            logging.error("Output type %s not understood.  Not producing output" % outputtype)
+        
+        outputProcessor.startProcessing()
+
+            
         
