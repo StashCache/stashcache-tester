@@ -9,6 +9,8 @@ from setuptools import setup, find_packages
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
+import glob
+
 setup(
     name = "stashcache_tester",
     version = "0.0.1",
@@ -24,9 +26,12 @@ setup(
     
     packages=find_packages('lib'),
     package_dir = {'':'lib'},
-    package_data = {
-        'stashcache_tester': ['templates/*']
-    },
+    data_files = [
+        ('etc', ['etc/tester.conf']),
+        ('etc/templates', glob.glob('etc/templates/*')),
+        ('bin', ['bin/stash-test'])
+    
+    ],
     
     long_description=read('README.rst'),
     classifiers=[

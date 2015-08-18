@@ -1,6 +1,8 @@
-
+*.egg\-info
 tester/*
 tests/*
 *.pyc
 log/*
 dist
+
+lib/stashcache_tester.egg-info
