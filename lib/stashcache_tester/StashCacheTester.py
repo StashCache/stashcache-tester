@@ -5,7 +5,7 @@ import os, sys
 import re
 import subprocess
 # TODO: possibly use PackageLoader
-from jinja2 import Environment, PackageLoader
+from jinja2 import Environment, FileSystemLoader
 import shutil
 import glob
 import json
@@ -93,7 +93,7 @@ class StashCacheTester(object):
         
         
         # Create the site specific tests
-        env = Environment(loader=PackageLoader('stashcache_tester', 'templates'))
+        env = Environment(loader=FileSystemLoader('etc/templates'))
         
         
         
@@ -128,7 +128,7 @@ class StashCacheTester(object):
         with open(reduce_submit, 'w') as f:
             f.write(reduce_template.render())
             
-        shutil.copyfile("templates/site_post.py", os.path.join(get_option("testingdir"), "site_post.py"))
+        shutil.copyfile("etc/templates/site_post.py", os.path.join(get_option("testingdir"), "site_post.py"))
         os.chmod(os.path.join(get_option("testingdir"), "site_post.py"), 0755)
         
         # Start the DAG
