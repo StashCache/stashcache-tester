@@ -5,4 +5,6 @@ tests/*
 log/*
 dist
 
+docs/_build
+
 lib/stashcache_tester.egg-info
