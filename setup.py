@@ -27,9 +27,9 @@ setup(
     packages=find_packages('lib'),
     package_dir = {'':'lib'},
     data_files = [
-        ('etc', ['etc/tester.conf']),
-        ('etc/templates', glob.glob('etc/templates/*')),
-        ('bin', ['bin/stash-test'])
+        ('/etc/stashcache-tester', ['etc/tester.conf']),
+        ('/etc/stashcache-tester/templates', glob.glob('etc/templates/*')),
+        ('/usr/bin', ['bin/stash-test'])
     
     ],
     

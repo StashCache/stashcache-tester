@@ -6,7 +6,7 @@ from stashcache_tester.StashCacheTester import StashCacheTester
 
 def add_options(parser):
     parser.add_option("-c", "--config", dest="config", 
-        help="Configuration file location")
+        help="Configuration file location", default="/etc/stashcache-tester/tester.conf")
 
 
 def main():
