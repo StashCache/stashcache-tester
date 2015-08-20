@@ -1,3 +1,0 @@
-jinja2
-humanfriendly
-matplotlib>=1.4
