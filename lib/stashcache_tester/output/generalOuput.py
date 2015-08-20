@@ -27,7 +27,7 @@ class GeneralOutput:
         
     def startProcessing(self):
         """
-        This is called when the the job plugin should begin processing the output.
+        This is called when the the output plugin should begin processing the `sitesData` data.
         
         """
         pass
