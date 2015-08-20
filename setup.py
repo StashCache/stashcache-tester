@@ -13,14 +13,14 @@ import glob
 
 setup(
     name = "stashcache_tester",
-    version = "0.0.1.3",
+    version = "0.0.2",
     author = "Derek Weitzel",
     author_email = "dweitzel@cse.unl.edu",
     description = ("A tester for the StashCache infrastructure"),
     license = "Apache 2.0",
     keywords = "StashCache testing",
     
-    install_requires = ['jinja2', 'humanfriendly', 'matplotlib>=1.4'],
+    install_requires = ['jinja2', 'humanfriendly', 'matplotlib>=1.4', 'funcsigs'],
     
     url = "https://github.com/djw8605/stashcache-tester",
     

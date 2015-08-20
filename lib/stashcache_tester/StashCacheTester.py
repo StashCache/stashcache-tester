@@ -85,6 +85,7 @@ class StashCacheTester(object):
         Run the tests prescribed in the configuration
         """
         sites = self.get_sites()
+        templates_dir = os.path.join(sys.prefix, "etc/stashcache-tester/templates")
         
         # Parse the size of the test in bytes
         raw_testsize = humanfriendly.parse_size(get_option("testsize"))
@@ -93,7 +94,7 @@ class StashCacheTester(object):
         
         
         # Create the site specific tests
-        env = Environment(loader=FileSystemLoader('etc/templates'))
+        env = Environment(loader=FileSystemLoader(templates_dir))
         
         
         
@@ -128,7 +129,7 @@ class StashCacheTester(object):
         with open(reduce_submit, 'w') as f:
             f.write(reduce_template.render())
             
-        shutil.copyfile("etc/templates/site_post.py", os.path.join(get_option("testingdir"), "site_post.py"))
+        shutil.copyfile(os.path.join(templates_dir, "site_post.py"), os.path.join(get_option("testingdir"), "site_post.py"))
         os.chmod(os.path.join(get_option("testingdir"), "site_post.py"), 0755)
         
         # Start the DAG
