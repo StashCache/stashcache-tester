@@ -29,7 +29,9 @@ Running StashCache
 
 StashCache comes with an executable script, ``stash-test`` which will begin the submission of test jobs.  A configuration file is required by ``stash-test``.  An example configuration file is located in ``etc/stashcache-tester/tester.conf``.  You can test with this configuration::
 
-  $  
+  $  stash-test -c tester/etc/stashcache-tester/tester.conf run
+  
+This will submit the DAG to the cluster.
 
 
 Debugging StashCache Tester 
