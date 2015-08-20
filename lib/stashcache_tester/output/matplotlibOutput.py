@@ -60,6 +60,7 @@ class MatplotlibOutput(GeneralOutput):
         plt.xticks(range(1, len(downloadTimes.keys())+1), downloadTimes.keys())
         plt.ylabel("Mb per second")
         plt.xlabel("Site")
+        plt.title("Violin Plot of StashCache Transfer Speeds per Site")
         plt.savefig("violinplot.png")
         plt.clf()
             
