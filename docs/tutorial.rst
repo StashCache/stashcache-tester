@@ -12,7 +12,7 @@ StashCache Tester requires `HTCondor <https://research.cs.wisc.edu/htcondor/>`_ 
 Installing
 ----------
 
-The StashCache tester is distributed in a python egg form.  Installing requires 
+The StashCache tester is distributed as a python package.  It 
 
 
 Running StashCache

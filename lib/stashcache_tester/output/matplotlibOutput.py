@@ -20,6 +20,11 @@ class MatplotlibOutput(GeneralOutput):
         1. A plot for each site, showing the start and stopping time of each download.  This graph is useful to see the distribution of start and stopping times.
         2. A `violin plot <https://en.wikipedia.org/wiki/Violin_plot>`_ of the distribution of download times for each site given in :ref:`sitesData <sitesData-label>`.
         
+        A violin plot example:
+        
+        .. image:: images/matploblib-violinplot.png
+            :width: 300pt
+        
         """
         logging.debug("Starting processing with matplotlib...")
         
