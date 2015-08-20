@@ -21,7 +21,7 @@ The setps to install are::
   > pip install --upgrade setuptools
   > pip install stashcache_tester
   
-The pip installation could take a while.  It requires the compilation and installation of several packages include matplotlib and numpy.
+The pip installation could take a while.  It requires the compilation and installation of several packages including matplotlib and numpy.
 
 
 Running StashCache
