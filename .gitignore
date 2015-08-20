@@ -4,7 +4,7 @@ tests/*
 *.pyc
 log/*
 dist
-
+.DS_Store
 docs/_build
 
 lib/stashcache_tester.egg-info

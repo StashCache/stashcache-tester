@@ -12,7 +12,16 @@ StashCache Tester requires `HTCondor <https://research.cs.wisc.edu/htcondor/>`_ 
 Installing
 ----------
 
-The StashCache tester is distributed as a python package.  It 
+The StashCache tester is distributed as a python package in `PyPi <https://pypi.python.org/pypi>`_.  It is recommended that you install the tester inside a virtual enviornment.
+
+The setps to install are::
+
+  > virtualenv tester
+  > . tester/bin/activate
+  > pip install --upgrade setuptools
+  > pip install stashcache_tester
+  
+The pip installation could take a while.  It requires the compilation and installation of several packages include matplotlib and numpy.
 
 
 Running StashCache
