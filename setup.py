@@ -13,7 +13,7 @@ import glob
 
 setup(
     name = "stashcache_tester",
-    version = "0.0.1",
+    version = "0.0.1.1",
     author = "Derek Weitzel",
     author_email = "dweitzel@cse.unl.edu",
     description = ("A tester for the StashCache infrastructure"),
@@ -27,11 +27,17 @@ setup(
     packages=find_packages('lib'),
     package_dir = {'':'lib'},
     data_files = [
-        ('/etc/stashcache-tester', ['etc/tester.conf']),
-        ('/etc/stashcache-tester/templates', glob.glob('etc/templates/*')),
-        ('/usr/bin', ['bin/stash-test'])
+        ('etc/stashcache-tester', ['etc/tester.conf']),
+        ('etc/stashcache-tester/templates', glob.glob('etc/templates/*'))
     
     ],
+    
+    entry_points = {
+        'console_scripts': [
+            'stash-test = stashcache_tester.stash_test:main' 
+        ]
+    
+    },
     
     long_description=read('README.rst'),
     classifiers=[
