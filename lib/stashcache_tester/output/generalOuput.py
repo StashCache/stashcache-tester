@@ -6,6 +6,8 @@ class GeneralOutput:
     
     :param dict sitesData: The data from sites in the form of a dictionary.  The keys should be the sites, and the values should be an array of times for the transfers.
     
+    .. _sitesData-label:
+    
     An example structure for ``sitesData`` is::
     
         sitesData = {

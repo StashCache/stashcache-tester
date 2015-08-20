@@ -14,6 +14,13 @@ class MatplotlibOutput(GeneralOutput):
         
         
     def startProcessing(self):
+        """
+        This function will create plots using python's `matplotlib <http://matplotlib.org/index.html>`_.  Currently, it will make:
+        
+        1. A plot for each site, showing the start and stopping time of each download.  This graph is useful to see the distribution of start and stopping times.
+        2. A `violin plot <https://en.wikipedia.org/wiki/Violin_plot>`_ of the distribution of download times for each site given in :ref:`sitesData <sitesData-label>`.
+        
+        """
         logging.debug("Starting processing with matplotlib...")
         
         # Lines for download times
