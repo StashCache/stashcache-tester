@@ -11,9 +11,6 @@ def read(fname):
 
 import glob
 
-
-print os.environ
-
 setup(
     name = "stashcache_tester",
     version = "0.0.1.2",
