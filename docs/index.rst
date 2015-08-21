@@ -17,6 +17,7 @@ Contents:
    tutorial
    output
    development
+   changelog
 
 
 

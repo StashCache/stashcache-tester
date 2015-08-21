@@ -16,7 +16,7 @@ from stashcache_tester.util.ExternalCommands import RunExternal
 from stashcache_tester.util.Configuration import get_option, set_config_file, set_option
 
 from stashcache_tester.util.StreamToLogger import StreamToLogger
-from stashcache_tester.output.matplotlibOutput import MatplotlibOutput
+
 
 class StashCacheTester(object):
     """Main class for the stash cache tester"""
@@ -150,7 +150,7 @@ class StashCacheTester(object):
         if os.path.isfile(location):
             logging.warning("File %s already exists." % location)
             if size == os.path.getsize(location):
-                logging.warning("File %s is the correct size, not modifying")
+                logging.warning("File %s is the correct size, not modifying" % location)
                 return
             else:
                 logging.warning("File %s is incorrect size.  Should be %i, was %i" % (location, size, os.path.getsize(location)))
@@ -183,11 +183,19 @@ class StashCacheTester(object):
                 inputdata = json.load(f)
             
             siteData[site] = inputdata
-        outputtype = get_option("outputtype")
-        if outputtype == "matplotlib":
-            outputProcessor = MatplotlibOutput(siteData)
-        else:
-            logging.error("Output type %s not understood.  Not producing output" % outputtype)
+        
+        outputmodule = ".".join(get_option("outputtype").split(".")[:-1])
+        outputclass = get_option("outputtype").split(".")[-1]
+        
+        try:
+            logging.debug("Trying to import module %s and class %s" % (outputmodule, outputclass))
+            mod = __import__(outputmodule, fromlist=[outputclass])
+            outputProcessor = getattr(mod, outputclass)
+            outputProcessor = outputProcessor(sitesData)
+        
+        except ImportError as e:
+            logging.error("Failed to load module %s and class %s" % (outputmodule, outputclass))
+            raise e
         
         outputProcessor.startProcessing()
 
