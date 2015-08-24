@@ -15,8 +15,10 @@ class GithubOutput(GeneralOutput):
     
         [github]
         repo = https://github.com/StashCache/StashCache-Tests.git
+        branch = gh-pages
         pushkey = ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC1mvou4au5Gwot1InmenfkazSc8I+7jVjww6ognZhUJfPI7IZUiEU2piM9tUpQjr+7nEMca+JBPj37wfDY5C2jG6xIarqfJlieruCvfj3OQ/YAEm+YBQ5s0snVv/yNLEPs9rtp7Q7ZDuqlX/vRKnZCTAVXE5bpvJ+VGKWZqJRa1vW93hkCgvZUzcHzMEbUNEjyVoWRUA0VJJ/ZWg1oYgng4etEEahTqEqPaRSYucjq9okERP9X0mAl5c31MtsSvF6BVssHVpbQBSu7z3WOsI2SA1VPsiSpwjbo354eiF40b1FelXdS6+hUZNQa3yiw5R86VjjoyQFHcTWJoAw7N8Yr deploykey
         directory = data
+        
         
     The configuration is:
     
@@ -28,6 +30,9 @@ class GithubOutput(GeneralOutput):
         
     ``directory``
         The directory to put the data summarized files into.
+        
+    ``branch``
+        The branch to install repo.
     
     """
     def __init__(self, sitesData):
