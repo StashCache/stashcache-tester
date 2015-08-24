@@ -8,7 +8,6 @@ Welcome to StashCache Tester's documentation!
 
 The StashCache Tester is designed to run periodically to test site's ability to interact with the StashCache.
 
-
 Contents:
 
 .. toctree::
