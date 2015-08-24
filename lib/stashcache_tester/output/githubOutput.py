@@ -22,16 +22,16 @@ class GithubOutput(GeneralOutput):
         
     The configuration is:
     
-    ``repo``
+    repo
         The git repo to commit the data to.
         
-    ``pushkey``
+    pushkey
         The key to use to push to the repo.
         
-    ``directory``
+    directory
         The directory to put the data summarized files into.
         
-    ``branch``
+    branch
         The branch to install repo.
     
     """
