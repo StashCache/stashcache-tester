@@ -191,7 +191,7 @@ class StashCacheTester(object):
             logging.debug("Trying to import module %s and class %s" % (outputmodule, outputclass))
             mod = __import__(outputmodule, fromlist=[outputclass])
             outputProcessor = getattr(mod, outputclass)
-            outputProcessor = outputProcessor(sitesData)
+            outputProcessor = outputProcessor(siteData)
         
         except ImportError as e:
             logging.error("Failed to load module %s and class %s" % (outputmodule, outputclass))

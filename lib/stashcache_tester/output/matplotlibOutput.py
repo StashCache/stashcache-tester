@@ -1,6 +1,6 @@
 import logging
 
-from stashcache_tester.output.generalOuput import GeneralOutput
+from stashcache_tester.output.generalOutput import GeneralOutput
 import numpy
 import matplotlib
 matplotlib.use('AGG')
