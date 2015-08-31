@@ -23,9 +23,10 @@ class GithubOutput(GeneralOutput):
     Github output requires additional configuration options in the main configuration in the section `[github]`.  An example configuration could be::
     
         [github]
-        repo = https://github.com/StashCache/StashCache-Tests.git
-        branch = gh-pages
+        repo = https://github.com/stashcache.github.io.git
+        branch = master
         directory = data
+        ssh_key = /home/user/.ssh/id_rsa
         
         
     The configuration is:
@@ -40,7 +41,7 @@ class GithubOutput(GeneralOutput):
         The directory to put the data summarized files into.
         
     ssh_key
-        Path to SSH key.
+        Path to SSH key to use when checking out and pushing to the repository.
         
     
     """
