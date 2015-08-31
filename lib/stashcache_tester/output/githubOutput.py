@@ -4,6 +4,7 @@ import json
 import time
 import shutil
 import os
+from tempfile import NamedTemporaryFile
 
 from stashcache_tester.output.generalOutput import GeneralOutput
 from stashcache_tester.util.Configuration import get_option
@@ -17,12 +18,13 @@ class GithubOutput(GeneralOutput):
     
     This class summarizes and uploads the download data to a github account.
     
+    Github output requires an SSH key to be added to the github repository which is pointed to by the `repo` configuration option.
+    
     Github output requires additional configuration options in the main configuration in the section `[github]`.  An example configuration could be::
     
         [github]
         repo = https://github.com/StashCache/StashCache-Tests.git
         branch = gh-pages
-        pushkey = ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC1mvou4au5Gwot1InmenfkazSc8I+7jVjww6ognZhUJfPI7IZUiEU2piM9tUpQjr+7nEMca+JBPj37wfDY5C2jG6xIarqfJlieruCvfj3OQ/YAEm+YBQ5s0snVv/yNLEPs9rtp7Q7ZDuqlX/vRKnZCTAVXE5bpvJ+VGKWZqJRa1vW93hkCgvZUzcHzMEbUNEjyVoWRUA0VJJ/ZWg1oYgng4etEEahTqEqPaRSYucjq9okERP9X0mAl5c31MtsSvF6BVssHVpbQBSu7z3WOsI2SA1VPsiSpwjbo354eiF40b1FelXdS6+hUZNQa3yiw5R86VjjoyQFHcTWJoAw7N8Yr deploykey
         directory = data
         
         
@@ -34,14 +36,21 @@ class GithubOutput(GeneralOutput):
     branch
         The branch to install repo.
         
-    pushkey
-        The key to use to push to the repo.
-        
     directory
         The directory to put the data summarized files into.
         
+    ssh_key
+        Path to SSH key.
+        
     
     """
+    
+    git_ssh_contents = """#!/bin/sh
+    
+    exec ssh -i $SSH_KEY_FILE "$@"
+    
+    """
+    
     def __init__(self, sitesData):
         GeneralOutput.__init__(self, sitesData)
         
@@ -51,14 +60,26 @@ class GithubOutput(GeneralOutput):
         
     
     def _summarize_data(self, sitesData):
-        summarized = {}
+        summarized = []
         
         # Average download time per site.
-        
+        for site in sitesData:
+            cur = {}
+            cur['name'] = site
+            siteTimes = sitesData[site]
+            total_runtime = 0
+            for run in siteTimes:
+                total_runtime += (float(run['endtime']) - float(run['starttime']))
+            
+            testsize = get_option("raw_testsize")
+            cur['average'] = (float(testsize*8) / (1024*1024)) / (total_runtime / len(siteTimes))
+            
+            summarized.append(cur)
+            
         
         # Should we do violin plot?
         
-        summarized = sitesData 
+        #summarized = sitesData 
         return summarized
         
     
@@ -69,11 +90,22 @@ class GithubOutput(GeneralOutput):
         
         summarized_data = self._summarize_data(self.sitesData)
         
+        logging.debug("Creating temporary file for GIT_SSH")
+        tmpfile = NamedTemporaryFile(delete=False)
+        tmpfile.write(self.git_ssh_contents)
+        git_sh_loc = tmpfile.name
+        logging.debug("Wrote contents of git_ssh_contents to %s" % git_sh_loc)
+        tmpfile.close()
+        import stat
+        os.chmod(git_sh_loc, stat.S_IXUSR | stat.S_IRUSR)
+        os.environ["GIT_SSH"] = git_sh_loc
+        
         # Download the git repo
         git_repo = self._get_option("repo")
         git_branch = self._get_option("branch")
-        push_key = self._get_option("pushkey")
-        RunExternal("git clone --quiet --branch %s  https://%s@github.com/%s output_git" % (git_branch, push_key, git_repo))
+        key_file = self._get_option("ssh_key")
+        os.environ["SSH_KEY_FILE"] = key_file
+        RunExternal("git clone --quiet --branch %s  git@github.com:%s output_git" % (git_branch, git_repo))
         
         # Write summarized data to new file
         output_dir = self._get_option("directory")
