@@ -18,4 +18,7 @@ requirements = GLIDEIN_ResourceName =?= "$(SITE)"
 should_transfer_files = IF_NEEDED
 when_to_transfer_output = ON_EXIT
 
+# Remove the job if it has not completed 6 hours after initial submission.
+periodic_remove = (QDate - CurrentTime) > 21600
+
 queue {{ numsubmit }}
