@@ -5,6 +5,7 @@ import glob
 import re
 import json
 import os
+import htcondor
 
 
 class Test:
@@ -12,6 +13,7 @@ class Test:
         self.starttime = 0
         self.endtime = 0
         self.success = False
+        self.duration = 0
     
 
 
@@ -22,40 +24,27 @@ def main():
     
     site = sys.argv[1]
     
-    # First, get a list of all the files to read 
-    filelist = glob.glob(os.path.join(site, "output.*"))
+    # First open the logfile
+    logfile = open(os.path.join(site, "%s.log" % site))
     
-    # Read through the files, keeping starting and ending dates
-    # for each test
-    start_re = re.compile("^starttime=([\d]+)$")
-    end_re = re.compile("^endtime=([\d]+)$")
-    result_re = re.compile("^result=([\w]+)$")
+    # Read in the events
+    events = htcondor.read_events(logfile)
     
-    tests = []
+    # Tests is a ClusterId.ProcId indexed dictionary, so we overwrite subsequent
+    # events.
+    tests = {}
+    for event in events:
+        if 'TriggerEventTypeName' in event and event['TriggerEventTypeName'] == "ULOG_JOB_TERMINATED" and 'Chirp_StashCp_DlTimeMs' in event:
+            # A finished event
+            tmpTest = Test()
+            tmpTest.duration = float(event['Chirp_StashCp_DlTimeMs']) / 1000
+            tmpTest.success = True
+            tests["%i.%i" % (event['Cluster'], event['Proc']) ] = tmpTest.__dict__
     
-    for file in filelist:
-        new_test = Test()
-        f = open(file, 'r')
-        for line in f:
-            if start_re.search(line):
-                match = start_re.search(line)
-                new_test.starttime = match.group(1)
-            elif end_re.search(line):
-                match = end_re.search(line)
-                new_test.endtime = match.group(1)
-            elif result_re.search(line):
-                match = result_re.search(line)
-                if match.group(1) == "unsuccessful":
-                    new_test.success = False
-                elif match.group(1) == "successful":
-                    new_test.success = True
-                else:
-                    new_test.success = None
-        tests.append(new_test.__dict__)
     
     outputfile = "postprocess.%s.json" % site
     with open(outputfile, 'w') as f:
-        f.write(json.dumps(tests))
+        f.write(json.dumps(tests.values()))
     
     return 0
                 

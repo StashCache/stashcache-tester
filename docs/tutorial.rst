@@ -9,6 +9,8 @@ Requirements
 
 StashCache Tester requires `HTCondor <https://research.cs.wisc.edu/htcondor/>`_ in order to run tests.  StashCache submits tests to HTCondor as a DAG.
 
+Additionally, it requires the HTCondor Python Bindings.
+
 Installing
 ----------
 
@@ -36,3 +38,5 @@ This will submit the DAG to the cluster.
 
 Debugging StashCache Tester 
 ---------------------------
+
+A log file is produced that will contain the debugging and error messages.

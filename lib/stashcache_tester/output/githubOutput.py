@@ -70,7 +70,7 @@ class GithubOutput(GeneralOutput):
             siteTimes = sitesData[site]
             total_runtime = 0
             for run in siteTimes:
-                total_runtime += (float(run['endtime']) - float(run['starttime']))
+                total_runtime += float(run['duration'])
             
             testsize = get_option("raw_testsize")
             cur['average'] = (float(testsize*8) / (1024*1024)) / (total_runtime / len(siteTimes))

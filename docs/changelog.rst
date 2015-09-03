@@ -2,6 +2,13 @@ Changelog
 =========
 
 
+Version 0.0.4
+-------------
+
+* Add timeout to site test jobs if they are running too long or idle too long.
+* Changed the site_post.py to use HTCondor's Python bindings rather than regular expressions.
+
+
 Version 0.0.3
 -------------
 
