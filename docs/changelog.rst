@@ -1,6 +1,12 @@
 Changelog
 =========
 
+Version 0.0.7
+-------------
+
+* Adding tests directory to contain configurations for testing the tester.
+* Changing default test output directory from ``tests`` to ``stashtests`` to not conflict with the new tests directory.
+
 
 Version 0.0.5 & 0.0.6
 ---------------------

@@ -1,6 +1,5 @@
 *.egg\-info
 tester/*
-tests/*
 *.pyc
 log/*
 dist
