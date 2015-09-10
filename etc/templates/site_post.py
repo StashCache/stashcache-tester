@@ -1,6 +1,10 @@
 #!//usr/bin/env python
 
+# Redirect stdout and stderr to a file
 import sys
+sys.stdout = open('site_post.out', 'a')
+sys.stderr = open('site_post.err', 'a')
+
 import glob
 import re
 import json
