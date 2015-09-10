@@ -2,6 +2,12 @@ Changelog
 =========
 
 
+Version 0.0.5 & 0.0.6
+---------------------
+
+* Small bug fixes from 0.0.4.  
+
+
 Version 0.0.4
 -------------
 
