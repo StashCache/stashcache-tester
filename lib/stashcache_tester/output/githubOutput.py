@@ -73,7 +73,7 @@ class GithubOutput(GeneralOutput):
                 total_runtime += float(run['duration'])
             
             testsize = get_option("raw_testsize")
-            if total_runtime = 0:
+            if total_runtime == 0:
                 cur['average'] = 0
             else:
                 cur['average'] = (float(testsize*8) / (1024*1024)) / (total_runtime / len(siteTimes))
