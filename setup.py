@@ -20,7 +20,7 @@ setup(
     license = "Apache 2.0",
     keywords = "StashCache testing",
     
-    install_requires = ['jinja2', 'humanfriendly', 'matplotlib>=1.4', 'funcsigs'],
+    install_requires = ['jinja2', 'humanfriendly', 'matplotlib>=1.4', 'funcsigs', 'numpy>=1.6'],
     
     url = "https://github.com/djw8605/stashcache-tester",
     
