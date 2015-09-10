@@ -5,6 +5,8 @@ import sys
 sys.stdout = open('site_post.out', 'a')
 sys.stderr = open('site_post.err', 'a')
 
+print sys.path
+
 import glob
 import re
 import json
