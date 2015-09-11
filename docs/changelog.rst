@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Version 0.0.8
+-------------
+
+* Remove host key check from the github output type.
+
 Version 0.0.7
 -------------
 

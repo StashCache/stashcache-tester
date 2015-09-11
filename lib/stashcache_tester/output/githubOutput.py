@@ -48,7 +48,7 @@ class GithubOutput(GeneralOutput):
     
     git_ssh_contents = """#!/bin/sh
     
-    exec ssh -i $SSH_KEY_FILE "$@"
+    exec ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i $SSH_KEY_FILE "$@"
     
     """
     
