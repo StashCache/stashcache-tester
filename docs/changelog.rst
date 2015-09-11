@@ -5,6 +5,7 @@ Version 0.0.8
 -------------
 
 * Remove host key check from the github output type.
+* Add condition to remove jobs which have had shadow exceptions more than 5 times.
 
 Version 0.0.7
 -------------
