@@ -131,6 +131,7 @@ class GithubOutput(GeneralOutput):
         git_repo = self._get_option("repo")
         git_branch = self._get_option("branch")
         key_file = self._get_option("ssh_key")
+        output_dir = self._get_option("directory")
         os.environ["SSH_KEY_FILE"] = key_file
         RunExternal("git clone --quiet --branch %s  git@github.com:%s output_git" % (git_branch, git_repo))
         
@@ -150,7 +151,7 @@ class GithubOutput(GeneralOutput):
         
         # Commit to git repo
         RunExternal("cd output_git; git add -f .")
-        RunExternal("cd output_git; git commit -m \"Adding file %s\"" % output_filename)
+        RunExternal("cd output_git; git commit -m \"Adding data for %s\"" % todays_key)
         RunExternal("cd output_git; git push -fq origin %s" % git_branch)
         
         shutil.rmtree("output_git")
