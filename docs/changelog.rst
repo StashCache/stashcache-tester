@@ -1,6 +1,12 @@
 Changelog
 =========
 
+Version 0.1.0
+-------------
+
+* Reconfigure data layout for github output plugin.  It will now write to a single file, ``data.json``.  
+
+
 Version 0.0.8
 -------------
 

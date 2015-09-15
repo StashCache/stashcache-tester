@@ -4,6 +4,7 @@ import json
 import time
 import shutil
 import os
+import sys
 from tempfile import NamedTemporaryFile
 
 from stashcache_tester.output.generalOutput import GeneralOutput
@@ -16,14 +17,36 @@ class GithubOutput(GeneralOutput):
     
     :param dict sitesData: Dictionary described in :ref:`sitesData <sitesData-label>`.
     
-    This class summarizes and uploads the download data to a github account.
+    This class summarizes and uploads the download data to a github account.  The data will be stored in a file named ``data.json`` in the git repo under the directory in the configuration.  The format of ``data.json`` is::
+    
+        {
+            "20150911": [
+                {
+                    "average": 364.76526180827,
+                    "name": "Tusker"
+                },
+                {
+                    "average": 75.99734924610296,
+                    "name": "UCSDT2"
+                },
+                ...
+            ], 
+            "20150913": [
+                {
+                    "average": 239.02169168535966,
+                    "name": "Tusker"
+                },
+                ...
+            ],
+            ...
+        }
     
     Github output requires an SSH key to be added to the github repository which is pointed to by the `repo` configuration option.
     
     Github output requires additional configuration options in the main configuration in the section `[github]`.  An example configuration could be::
     
         [github]
-        repo = https://github.com/stashcache.github.io.git
+        repo = StashCache/stashcache.github.io.git
         branch = master
         directory = data
         ssh_key = /home/user/.ssh/id_rsa
@@ -111,30 +134,19 @@ class GithubOutput(GeneralOutput):
         os.environ["SSH_KEY_FILE"] = key_file
         RunExternal("git clone --quiet --branch %s  git@github.com:%s output_git" % (git_branch, git_repo))
         
-        # Write summarized data to new file
-        output_dir = self._get_option("directory")
-        output_filename = "%s.json" % time.strftime("%Y%m%d-%H%M%S")
-        output_file = os.path.join("output_git", output_dir, output_filename)
-        if os.path.exists(output_file):
-            logging.error("Error, output file %s already exists!" % output_file)
+        # Write summarized data to the data file
+        data_filename = os.path.join("output_git", output_dir, "data.json")
+        if not os.path.exists(data_filename):
+            logging.error("Data file does not exist, bailing")
             sys.exit(1)
+        with open(data_filename) as data_file:
+            data = json.load(data_file)
         
-        with open(output_file, 'w') as outfile:
-            json.dump(summarized_data, outfile)
-        
-        # Write filename to index file
-        index_filename = os.path.join("output_git", output_dir, "index.json")
-        if not os.path.exists(index_filename):
-            logging.error("Index file does not exist, bailing")
-            sys.exit(1)
-        with open(index_filename) as index_file:
-            index = json.load(index_file)
-        
-        # Should we limit the size of 'files' to only ~30 files (30 days?)
-        index['files'].append(output_filename)
-        
-        with open(index_filename, 'w') as index_file:
-            json.dump(index, index_file)
+        # Write today's summarized data
+        todays_key = time.strftime("%Y%m%d")
+        data[todays_key] = summarized_data
+        with open(data_filename, 'w') as data_file:
+            json.dump(data, data_file)
         
         # Commit to git repo
         RunExternal("cd output_git; git add -f .")
