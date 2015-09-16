@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Version 0.1.1
+-------------
+
+* Fix bug in post site processing when certain output exists but is blank.
+
 Version 0.1.0
 -------------
 
