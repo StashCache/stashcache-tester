@@ -38,7 +38,7 @@ def main():
     # events.
     tests = {}
     for event in events:
-        if 'TriggerEventTypeName' in event and event['TriggerEventTypeName'] == "ULOG_JOB_TERMINATED" and 'Chirp_StashCp_DlTimeMs' in event:
+        if 'TriggerEventTypeName' in event and event['TriggerEventTypeName'] == "ULOG_JOB_TERMINATED" and 'Chirp_StashCp_DlTimeMs' in event and event['Chirp_StashCp_DlTimeMs'] != "":
             # A finished event
             tmpTest = Test()
             tmpTest.duration = float(event['Chirp_StashCp_DlTimeMs']) / 1000
