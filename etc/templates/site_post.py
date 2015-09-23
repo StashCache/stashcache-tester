@@ -18,6 +18,7 @@ class Test:
         self.endtime = 0
         self.success = False
         self.duration = 0
+        self.cache = ""
     
 
 
@@ -43,6 +44,9 @@ def main():
             tmpTest = Test()
             tmpTest.duration = float(event['Chirp_StashCp_DlTimeMs']) / 1000
             tmpTest.success = True
+            if "Chirp_StashCp_Prefix" in event and event["Chirp_StashCp_Prefix"] != "":
+                tmpTest.cache = event["Chirp_StashCp_Prefix"]
+                
             tests["%i.%i" % (event['Cluster'], event['Proc']) ] = tmpTest.__dict__
     
     

@@ -92,14 +92,32 @@ class GithubOutput(GeneralOutput):
             cur['name'] = site
             siteTimes = sitesData[site]
             total_runtime = 0
+            caches = {}
             for run in siteTimes:
                 total_runtime += float(run['duration'])
+                cache = run['cache']
+                if cache not in caches:
+                    caches[cache] = {}
+                    caches[cache]['runs'] = 0
+                    caches[cache]['totalRuntime'] = 0
+                    
+                caches[cache]['totalRuntime'] += float(run['duration'])
+                caches[cache]['runs'] += 1
+            
+            
             
             testsize = get_option("raw_testsize")
             if total_runtime == 0:
                 cur['average'] = 0
+                for cache in caches.keys():
+                    caches[cache]['average'] = 0
             else:
                 cur['average'] = (float(testsize*8) / (1024*1024)) / (total_runtime / len(siteTimes))
+                
+                for cache in caches.keys():
+                    caches[cache]['average'] = (float(testsize*8) / (1024*1024)) / (caches[cache]['totalRuntime'] / caches[cache]['runs'])
+            
+            cur['caches'] = caches
             
             summarized.append(cur)
             

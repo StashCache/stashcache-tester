@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Version 0.2.0
+-------------
+
+* Add caching site to the output data for :py:class:`stashcache_tester.output.githubOutput.GithubOutput`
+
 Version 0.1.1
 -------------
 
