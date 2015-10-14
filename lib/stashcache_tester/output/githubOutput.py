@@ -167,9 +167,10 @@ class GithubOutput(GeneralOutput):
         # Truncate the data to the latest `maxdays` days.
         maxdays = self._get_option("maxdays")
         # Get and sort the keys
-        sorted_list = data.keys().sort()
+        sorted_list = data.keys()
+        sorted_list.sort()
         # Discard the last `maxdays` days (looking for what we need to delete)
-        to_delete = sorted_list[:maxdays-1]
+        to_delete = sorted_list[:-int(maxdays)]
         for key in to_delete:
             logging.debug("Removing data from %s" % key)
             data.pop(key, None)
