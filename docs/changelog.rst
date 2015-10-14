@@ -1,10 +1,16 @@
 Changelog
 =========
 
+Version 0.3.0
+-------------
+
+* Adding the ``maxdays`` to :py:class:`stashcache_tester.output.githubOutput.GithubOutput GithubOutput` to limit the number of days to keep data.
+
+
 Version 0.2.0
 -------------
 
-* Add caching site to the output data for :py:class:`stashcache_tester.output.githubOutput.GithubOutput`
+* Add caching site to the output data for :py:class:`stashcache_tester.output.githubOutput.GithubOutput GithubOutput`
 
 Version 0.1.1
 -------------

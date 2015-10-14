@@ -63,6 +63,9 @@ class GithubOutput(GeneralOutput):
     directory
         The directory to put the data summarized files into.
         
+    maxdays
+        The maximum number of days to keep data.
+        
     ssh_key
         Path to SSH key to use when checking out and pushing to the repository.
         
@@ -160,6 +163,16 @@ class GithubOutput(GeneralOutput):
             sys.exit(1)
         with open(data_filename) as data_file:
             data = json.load(data_file)
+        
+        # Truncate the data to the latest `maxdays` days.
+        maxdays = self._get_option("maxdays")
+        # Get and sort the keys
+        sorted_list = data.keys().sort()
+        # Discard the last `maxdays` days (looking for what we need to delete)
+        to_delete = sorted_list[:maxdays-1]
+        for key in to_delete:
+            logging.debug("Removing data from %s" % key)
+            data.pop(key, None)
         
         # Write today's summarized data
         todays_key = time.strftime("%Y%m%d")
