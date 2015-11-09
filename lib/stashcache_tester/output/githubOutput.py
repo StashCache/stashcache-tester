@@ -64,7 +64,7 @@ class GithubOutput(GeneralOutput):
         The directory to put the data summarized files into.
         
     maxdays
-        The maximum number of days to keep data.
+        The maximum number of days to keep data.  Default=30
         
     ssh_key
         Path to SSH key to use when checking out and pushing to the repository.
