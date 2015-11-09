@@ -165,7 +165,7 @@ class GithubOutput(GeneralOutput):
             data = json.load(data_file)
         
         # Truncate the data to the latest `maxdays` days.
-        maxdays = self._get_option("maxdays")
+        maxdays = self._get_option("maxdays", 30)
         # Get and sort the keys
         sorted_list = data.keys()
         sorted_list.sort()
