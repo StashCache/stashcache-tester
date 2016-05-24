@@ -8,6 +8,12 @@ env:
   
 services:
   - docker
+
+notifications:
+  email:
+    recipients:
+      - stashcache@opensciencegrid.org
+    
   
 before_install:
   - sudo apt-get update
