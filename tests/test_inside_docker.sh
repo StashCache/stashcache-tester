@@ -32,6 +32,7 @@ mount -t cvmfs stash.osgstorage.org /cvmfs/stash.osgstorage.org
 result=`md5sum /cvmfs/stash.osgstorage.org/user/dweitzel/public/blast/queries/query1 | awk '{print $1;}'`
 
 if [ "$result" != "12bdb9a96cd5e8ca469b727a81593201" ]; then
+  journalctl --no-pager
   exit 1
 fi
 
