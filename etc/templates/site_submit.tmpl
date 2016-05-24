@@ -1,7 +1,7 @@
 # Template for submission to a single site
 # Variables that should be set in the DAG:
 # - SITE: Site name to be used in the requirements
-
+# - MD5SUM: md5sum of file
 
 initialdir = $(SITE)
 universe = vanilla
@@ -10,7 +10,7 @@ error = error.$(SITE).$(PROCESS)
 log = $(SITE).log
 
 executable = $(SITE)/site_test.sh
-arguments = $(SITE)
+arguments = $(SITE) $(MD5SUM)
 
 requirements = GLIDEIN_ResourceName =?= "$(SITE)"
 
@@ -19,8 +19,8 @@ should_transfer_files = IF_NEEDED
 when_to_transfer_output = ON_EXIT
 
 # Remove the job if
-- it has not completed 6 hours after initial submission
-- or the condor_shadow has restarted more than 5 times (usually means that the job is not progressing)
+# - it has not completed 6 hours after initial submission
+# - or the condor_shadow has restarted more than 5 times (usually means that the job is not progressing)
 periodic_remove = ((CurrentTime - QDate) > 21600) || (NumShadowStarts > 5)
 
 # Add stash chirp variables back to the log

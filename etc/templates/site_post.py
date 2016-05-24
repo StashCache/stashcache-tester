@@ -43,7 +43,11 @@ def main():
             # A finished event
             tmpTest = Test()
             tmpTest.duration = float(event['Chirp_StashCp_DlTimeMs']) / 1000
-            tmpTest.success = True
+            if 'ReturnValue' in event and event['ReturnValue'] == 0:
+                tmpTest.success = True
+            else:
+                tmpTest.success = False
+                
             if "Chirp_StashCp_Prefix" in event and event["Chirp_StashCp_Prefix"] != "":
                 tmpTest.cache = event["Chirp_StashCp_Prefix"]
                 
