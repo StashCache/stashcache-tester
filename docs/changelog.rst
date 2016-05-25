@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Version 0.4.0
+-------------
+
+* Check MD5sum of test file
+* Correctly report failed downloads
+* Use new module stashcp/3.0
+
 Version 0.3.0
 -------------
 

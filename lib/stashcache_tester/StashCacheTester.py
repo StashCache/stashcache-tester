@@ -9,6 +9,7 @@ from jinja2 import Environment, FileSystemLoader
 import shutil
 import glob
 import json
+import hashlib
 
 import humanfriendly
 from stashcache_tester.Site import Site
@@ -90,7 +91,7 @@ class StashCacheTester(object):
         # Parse the size of the test in bytes
         raw_testsize = humanfriendly.parse_size(get_option("testsize"))
         
-        self.createTestFile(raw_testsize, get_option("stashdir"))
+        md5sum = self.createTestFile(raw_testsize, get_option("stashdir"))
         
         
         # Create the site specific tests
@@ -121,7 +122,7 @@ class StashCacheTester(object):
         dag_template = env.get_template("dag.tmpl")
         test_dag = os.path.join(testingdir, "submit.dag")
         with open(test_dag, 'w') as f:
-            f.write(dag_template.render(sites=sites))
+            f.write(dag_template.render(sites=sites, md5sum=md5sum))
             
         
         reduce_template = env.get_template("test_reduce.tmpl")
@@ -145,13 +146,24 @@ class StashCacheTester(object):
         
         :param int size: size of the requested file
         :param str location: location to store test file
+        :return: String md5sum
+        :rtype: string
         """
+        
+        
+        def md5(fname):
+            hash_md5 = hashlib.md5()
+            with open(fname, "rb") as f:
+                for chunk in iter(lambda: f.read(4096), b""):
+                    hash_md5.update(chunk)
+            return hash_md5.hexdigest()
+        
         
         if os.path.isfile(location):
             logging.warning("File %s already exists." % location)
             if size == os.path.getsize(location):
                 logging.warning("File %s is the correct size, not modifying" % location)
-                return
+                return md5(location)
             else:
                 logging.warning("File %s is incorrect size.  Should be %i, was %i" % (location, size, os.path.getsize(location)))
                 logging.warning("Removing %s in order to create correctly sized test file" % location)
@@ -162,10 +174,10 @@ class StashCacheTester(object):
             # block size of 10 MB
             blocksize = 10 * (1024*1024)
             while (size > 0):
-                f.write("\0" * blocksize)
+                f.write(os.urandom(blocksize))
                 size -= blocksize
             
-        
+        return md5(location)
     
         
     def reduceResults(self):
