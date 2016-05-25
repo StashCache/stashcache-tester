@@ -12,7 +12,8 @@ services:
 notifications:
   email:
     recipients:
-      - stashcache@opensciencegrid.org
+      - dweitzel@cse.unl.edu
+      - bbockelm@cse.unl.edu
     
   
 before_install:
