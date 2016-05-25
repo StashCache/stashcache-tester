@@ -24,6 +24,6 @@ when_to_transfer_output = ON_EXIT
 periodic_remove = ((CurrentTime - QDate) > 21600) || (NumShadowStarts > 5)
 
 # Add stash chirp variables back to the log
-job_ad_information_attrs = Chirp_StashCp_Prefix, Chirp_StashCp_FileSize, Chirp_StashCp_DlTimeMs, Chirp_StashCp_Dest, Chirp_StashCp_Used, Chirp_StashCp_FileName, Chirp_StashCp_DLStart
+job_ad_information_attrs = Chirp_StashCp_Prefix, Chirp_StashCp_FileSize, Chirp_StashCp_DlTimeMs, Chirp_StashCp_Dest, Chirp_StashCp_Used, Chirp_StashCp_FileName, Chirp_StashCp_DLStart, Chirp_TransferSuccess
 
 queue {{ numsubmit }}

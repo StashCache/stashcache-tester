@@ -95,17 +95,24 @@ class GithubOutput(GeneralOutput):
             cur['name'] = site
             siteTimes = sitesData[site]
             total_runtime = 0
+            failures = 0
             caches = {}
             for run in siteTimes:
-                total_runtime += float(run['duration'])
+                # Initialize the cache structure
                 cache = run['cache']
                 if cache not in caches:
                     caches[cache] = {}
                     caches[cache]['runs'] = 0
                     caches[cache]['totalRuntime'] = 0
+                    caches[cache]['failures'] = 0
                     
-                caches[cache]['totalRuntime'] += float(run['duration'])
-                caches[cache]['runs'] += 1
+                if run['success'] is "true":
+                    total_runtime += float(run['duration'])
+                    caches[cache]['totalRuntime'] += float(run['duration'])
+                    caches[cache]['runs'] += 1
+                else:
+                    caches[cache]['failures'] += 1
+                    failures += 1
             
             
             
@@ -121,6 +128,7 @@ class GithubOutput(GeneralOutput):
                     caches[cache]['average'] = (float(testsize*8) / (1024*1024)) / (caches[cache]['totalRuntime'] / caches[cache]['runs'])
             
             cur['caches'] = caches
+            cur['failures'] = failures
             
             summarized.append(cur)
             

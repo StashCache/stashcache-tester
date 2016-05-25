@@ -3,6 +3,32 @@
 site=$1
 md5check=$2
 
+# Find the Chirp executable from the glidein
+function findChirp {
+  pushd ../../
+	pd=$(find . | grep "condor_chirp")
+  export PATH=$PWD/`dirname $pd`:$PATH
+  popd
+}
+
+
+# For DAGs, all jobs in a HTCondor "Cluster" must exit with zero exit status,
+# therefore we have to propagate failures in another method.  Using condor_chirp
+# is as good as any.
+function quit {
+  findChirp
+  if [ "$1" -eq "0" ]; then
+    condor_chirp set_job_attr_delayed Chirp_TransferSuccess TRUE
+  else
+    condor_chirp set_job_attr_delayed Chirp_TransferSuccess FALSE
+  fi
+  if [ -e $actual_file ]; then
+    rm -f $actual_file
+  fi
+  exit 0
+}
+
+
 echo "Running against site $site"
 
 module load stashcp/3.0
@@ -19,14 +45,14 @@ echo "endtime=$endtime"
 if [ $stashreturn -ne 0 ]; then
   echo "Error downloading file from $testurl"
   echo "result=unsuccessful"
-  exit $stashreturn
+  quit $stashreturn
 fi
 
 sum=`md5sum $actual_file | awk '{print $1;}'`
 
 if [ "$sum" != "$md5check" ]; then
   echo "md5sum doesn't match"
-  exit 1
+  quit 1
 fi
 
 echo "result=successful"
@@ -40,4 +66,4 @@ rm -rf $actual_file
 
 
 
-exit 0
+quit 0
