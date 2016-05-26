@@ -40,17 +40,18 @@ def main():
     tests = {}
     for event in events:
         tmpTest = Test()
-        if 'TriggerEventTypeName' in event and event['TriggerEventTypeName'] == "ULOG_JOB_TERMINATED" and 'Chirp_StashCp_DlTimeMs' in event and event['Chirp_StashCp_DlTimeMs'] != "":
+        if 'TriggerEventTypeName' in event and event['TriggerEventTypeName'] == "ULOG_JOB_TERMINATED":
             # A finished event
             
-            tmpTest.duration = float(event['Chirp_StashCp_DlTimeMs']) / 1000
-            if 'Chirp_TransferSuccess' in event and event['Chirp_TransferSuccess'] == True:
-                tmpTest.success = True
+            if 'Chirp_StashCp_DlTimeMs' in event and event['Chirp_StashCp_DlTimeMs'] != "":
+                tmpTest.duration = float(event['Chirp_StashCp_DlTimeMs']) / 1000
+                if 'Chirp_TransferSuccess' in event and event['Chirp_TransferSuccess'] == True:
+                    tmpTest.success = True
                 
-            if "Chirp_StashCp_Prefix" in event and event["Chirp_StashCp_Prefix"] != "":
-                tmpTest.cache = event["Chirp_StashCp_Prefix"]
+                if "Chirp_StashCp_Prefix" in event and event["Chirp_StashCp_Prefix"] != "":
+                    tmpTest.cache = event["Chirp_StashCp_Prefix"]
                 
-        tests["%i.%i" % (event['Cluster'], event['Proc']) ] = tmpTest.__dict__
+                tests["%i.%i" % (event['Cluster'], event['Proc']) ] = tmpTest.__dict__
     
     
     outputfile = "postprocess.%s.json" % site
