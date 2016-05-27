@@ -24,14 +24,25 @@ echo "CVMFS_HTTP_PROXY=DIRECT" >> /etc/cvmfs/default.local
 echo "CVMFS_EXTERNAL_URL=$CVMFS_EXTERNAL_URL" >> /etc/cvmfs/domain.d/osgstorage.org.local
 
 mkdir -p /cvmfs/stash.osgstorage.org
+mkdir -p /cvmfs/nova.osgstorage.org
 mkdir -p /cvmfs/config-osg.opensciencegrid.org
 
 mount -t cvmfs config-osg.opensciencegrid.org /cvmfs/config-osg.opensciencegrid.org
 mount -t cvmfs stash.osgstorage.org /cvmfs/stash.osgstorage.org
+mount -t cvmfs nova.osgstorage.org /cvmfs/nova.osgstorage.org
 
+# Test Stash
 result=`md5sum /cvmfs/stash.osgstorage.org/user/dweitzel/public/blast/queries/query1 | awk '{print $1;}'`
 
 if [ "$result" != "12bdb9a96cd5e8ca469b727a81593201" ]; then
+  journalctl --no-pager
+  exit 1
+fi
+
+# Test Nova
+result=`md5sum /cvmfs/nova.osgstorage.org/pnfs/fnal.gov/usr/nova/data/flux/gsimple/nova_gsimple_flux.ls | awk '{print $1;}'`
+
+if [ "$result" != "8704291ceaf4f09924cdfb2dc4298f01" ]; then
   journalctl --no-pager
   exit 1
 fi
