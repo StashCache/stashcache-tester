@@ -106,7 +106,7 @@ class GithubOutput(GeneralOutput):
                     caches[cache]['totalRuntime'] = 0
                     caches[cache]['failures'] = 0
                     
-                if run['success'] is "true":
+                if run['success'] is True:
                     total_runtime += float(run['duration'])
                     caches[cache]['totalRuntime'] += float(run['duration'])
                     caches[cache]['runs'] += 1
