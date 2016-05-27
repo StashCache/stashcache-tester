@@ -1,13 +1,13 @@
 sudo: required
 env:
   glboal:
-  - OS_TYPE=centos 
-  - OS_VERSION=7
+    - OS_TYPE=centos 
+    - OS_VERSION=7
   matrix:
-  - CVMFS_EXTERNAL_URL="http://hcc-stash.unl.edu:8000/"
-  - CVMFS_EXTERNAL_URL="http://stashcache.grid.uchicago.edu:8000/"
-  - CVMFS_EXTERNAL_URL="http://xrd-cache-1.t2.ucsd.edu:8000/"
-  - CVMFS_EXTERNAL_URL="http://mwt2-stashcache.campuscluster.illinois.edu:8000/"
+    - CVMFS_EXTERNAL_URL="http://hcc-stash.unl.edu:8000/"
+    - CVMFS_EXTERNAL_URL="http://stashcache.grid.uchicago.edu:8000/"
+    - CVMFS_EXTERNAL_URL="http://xrd-cache-1.t2.ucsd.edu:8000/"
+    - CVMFS_EXTERNAL_URL="http://mwt2-stashcache.campuscluster.illinois.edu:8000/"
   
 services:
   - docker
