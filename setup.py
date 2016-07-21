@@ -13,7 +13,7 @@ import glob
 
 setup(
     name = "stashcache_tester",
-    version = "0.4.3",
+    version = "0.4.4",
     author = "Derek Weitzel",
     author_email = "dweitzel@cse.unl.edu",
     description = ("A tester for the StashCache infrastructure"),
