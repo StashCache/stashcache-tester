@@ -16,6 +16,7 @@ notifications:
     recipients:
       - dweitzel@cse.unl.edu
       - bbockelm@cse.unl.edu
+      - marian.zvada@cern.ch
     
   
 before_install:
