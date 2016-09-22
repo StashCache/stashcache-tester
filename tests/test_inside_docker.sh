@@ -47,3 +47,12 @@ if [ "$result" != "8704291ceaf4f09924cdfb2dc4298f01" ]; then
   exit 1
 fi
 
+# Check the update times of some special files
+for repo in /cvmfs/nova.osgstorage.org/pnfs /cvmfs/stash.osgstorage.org/user/bbockelm; do
+  if test ! `find $repo -maxdepth 0 -mtime -1`; then
+    echo "$repo is too old"
+    exit 1
+  fi
+done
+
+
