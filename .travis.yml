@@ -7,6 +7,8 @@ env:
     - CVMFS_EXTERNAL_URL="http://stashcache.grid.uchicago.edu:8000/"
     - CVMFS_EXTERNAL_URL="http://xrd-cache-1.t2.ucsd.edu:8000/"
     - CVMFS_EXTERNAL_URL="http://mwt2-stashcache.campuscluster.illinois.edu:8000/"
+    - CVMFS_EXTERNAL_URL="http://osgxroot.usatlas.bnl.gov:8000/"
+    
   
 services:
   - docker
